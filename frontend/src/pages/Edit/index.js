@@ -1,42 +1,63 @@
 import React, { useState, useEffect } from 'react';
 import api from '../../services/api';
 import { useHistory, useParams } from 'react-router-dom';
-
+import { toast } from 'react-toastify';
 import { Container, Header, Form } from './styles';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Main() {
+    
+
     const { id } = useParams();
     
     console.log(id)
     const history = useHistory();
 
+    const [user, setUser] = useState([]);
+
     const [formData, setFormData] = useState({
         nick: '',
         email: '',
         senha: '',
+        oldPassword: '',
+        password: '',
+        confirmPassword: '',
         elo: '',
     });
 
     useEffect(() => {
         api.get(`/users/${id}`).then(response => {
 
+            setUser([response.data.user]);
+            console.log(response.data);
             localStorage.getItem('token', response.data.token);
+            console.log(localStorage)
         })
     }, [id]);
 
+    function handleStateChange(event) {
+    const { name, value } = event.target;
 
-    function handleInputChange(event) {
-        const { name, value } = event.target;
+        setUser([user]);
         
-
-        setFormData({ ...formData, [name]: value });
+        setFormData({ ...formData, ...user, [name]: value });
     }
-
 
     function handleGoBack() {
 
         history.push(`/profile/${id}`);
     }
+
+    async function handleDelete() {
+
+        toast.warn('Usuario excluido!', {autoClose: 1000})
+
+        await api.delete(`/users`)
+
+        setTimeout(() => {
+            history.push('/')
+        }, 1200);
+    };
 
     async function handleSubmit(e) {
         e.preventDefault();
@@ -47,8 +68,8 @@ function Main() {
         const data = {
             nick, 
             email, 
-            password,
             oldPassword,
+            password,
             confirmPassword, 
             elo,
 
@@ -56,7 +77,10 @@ function Main() {
         
         console.log(data);
 
-      await api.put('/users', data);
+    console.log(toast.success)
+    toast.success("Informacoes alteradas!", {autoClose: 1400});
+    await api.put('/users', data);
+        
         
     }
         async  function submitDone() {
@@ -64,7 +88,7 @@ function Main() {
             
             setTimeout(() => {
                 history.push(`/profile/${id}`);
-            }, 1200);
+            }, 1400);
           
     }
 
@@ -76,7 +100,7 @@ function Main() {
 
         <Container>
 
-            <Form onSubmit={handleSubmit} >   
+            <Form onSubmit={handleSubmit} onReset={handleDelete}>   
                 
                 <div>
                     <section>
@@ -86,23 +110,25 @@ function Main() {
                      <button  onClick={handleGoBack}>Voltar</button>
                   </div>
 
-                   {/* {user.map(user => (
+                   {user.map(user => (
 
-                    <> */}
+                    <> 
                         <input 
                             name="nick"
+                            onChange={handleStateChange}
                             id="nick"
+                            value={user.nick}
                             placeholder="Digite seu nick"
-                            onChange={handleInputChange}
                             >
                         </input>
                    
                     <input
                             name="email"
+                            value={user.email}
                             type="email"
                             id="email"
                             placeholder="Digite seu e-mail"
-                            onChange={handleInputChange}
+                            onChange={handleStateChange}
                      >
                 </input>
              
@@ -111,41 +137,51 @@ function Main() {
                             type="password"
                             id="oldPassword"
                             placeholder="Digite sua senha atual"
-                            onChange={handleInputChange}
+                            onChange={handleStateChange}
                         />
+                        <input
+                            name="password"
+                            type="password"
+                            id="password"
+                            placeholder="Digite sua nova senha"
+                            onChange={handleStateChange}
+                        />
+
                         <input
                             name="confirmPassword"
                             type="password"
                             id="confirmPassword"
-                            placeholder="Digite sua nova senha"
-                            onChange={handleInputChange}
-                        />
-
-                        <input
-                            name="checkPassword"
-                            type="password"
-                            id="checkPassword"
                             placeholder="Confirmar senha"
-                            onChange={handleInputChange}
+                            onChange={handleStateChange}
                         />
 
                         <input
                             name="elo"
+                            value={user.elo}
                             type="text"
                             id="elo"
                             placeholder="Seu elo"
-                            onChange={handleInputChange}
+                            onChange={handleStateChange}
                         />
                         
-                     {/* </>
-                   ))} */}
+                    </>
+                   ))} 
                     </section>
 
                         <button
                         type="submit"
                         onClick={submitDone}
                         >
-                            Salvar alteracoes</button>
+                            Salvar alteracoes
+                        </button>
+
+                        <button
+                        className="buttonDelete"
+                        type="reset"
+                        onClick={handleDelete}
+                        >
+                            Excluir usuario
+                        </button>
                 </div>
 
                 <footer> 

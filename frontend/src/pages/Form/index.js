@@ -3,7 +3,8 @@ import { useHistory } from 'react-router-dom';
 
 import { Container, Header, Form } from './styles';
 import api from '../../services/api';
-
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 function Main() {
     const [agents, setAgents]  = useState([]);
@@ -67,15 +68,27 @@ function Main() {
         };
         console.log(data);
 
-      await api.post('/users', data);
+        
+        await api.post('/users', data);
+        toast.success('Usuario cadastrado com sucesso!', {autoClose: 1300})
         
     }
-          function submitDone() {
-    
-            setTimeout(() => {
-                history.push('/');
-            }, 1000);
-          }
+    async function submitDone() {
+        const {email, password} = formData;
+
+        const data = {
+            email, password
+        };
+
+       await api.post('/sessions', data).then(response => {
+            const { id } = response.data.user;
+            
+            history.push(`/profile/${id}`, response.data.token);
+ 
+            localStorage.setItem('token', response.data.token);
+        });      
+    };
+           
 
     return (
         <>
@@ -90,7 +103,7 @@ function Main() {
                 
                 <div>
                     <section >
-                     
+                        <h1>Cadastre-se</h1>
                         <input 
                             name="nick"
                             id="nick"

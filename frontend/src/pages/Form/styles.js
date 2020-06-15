@@ -27,38 +27,13 @@ export const Form = styled.form`
     margin: 0 auto;
     max-width:  550px;
     background: #08101A;
+    h1 {
+        color: #fff;
+        margin-bottom: 20px;
+    }
    section {
     padding: 0 30px;
-
-    div {
-        display: flex;
-        
-        justify-content: space-between;
-        
-        button {
-            margin: 0;
-            width: 30%;  
-            height: 50px;
-            background: #21395E; 
-
-            &:hover {
-                background: #324B72;
-             &::placeholder {
-                color: #ddd;
-            }
-            }  
-        }
-    }
    }
-   span {
-       color: #fff;
-       font-size: 25px;
-        display: flex;
-        
-        align-items: center;
-        padding-right: 250px;
-   }
-
    input {
        width: 100%;
        background: #1D2532;
@@ -67,22 +42,10 @@ export const Form = styled.form`
        border: 0;
        margin-bottom: 10px;
        color: #A01D35;
-       cursor: pointer;
        &::placeholder {
            color: #bbb;
            font-weight: bold;
        }
-       :hover {
-            background: #2C394B;
-            &::placeholder {
-                color: #ddd;
-            }
-       }
-       :nth-child(2){
-           margin-top: 20px;
-       }
-
-       
    }
 
    ul {

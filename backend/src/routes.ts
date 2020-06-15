@@ -23,13 +23,14 @@ routes.get('/login', usersController.index);
 
 
 routes.post('/sessions', sessionsController.store);
-routes.get('/users/:id', usersController.show);
 
 routes.use('/uploads', express.static(path.resolve(__dirname, '..', 'uploads')));
 
 routes.use(authMiddleware);
 
+routes.get('/users/:id', usersController.show);
 routes.put('/users', usersController.update);
+routes.delete('/users', usersController.delete);
 
 
 export default routes;

@@ -1,15 +1,13 @@
-import React, { useState ,useEffect, useContext } from 'react';
+import React, { useState ,useEffect,  } from 'react';
 import api from '../../services/api';
 import { useParams, useHistory } from 'react-router-dom';
 import eloImage from '../../uploads/valorantMaster 2.svg';
 import { FiLogOut, FiTarget }  from 'react-icons/fi'
 import { Container, Header, SideInfos, SideAgents, MiddleColumn, GridContent } from './styles';
-import { Context } from '../../Context/authContext';
+
 
 
 function Profile() {
-    // const { authenticated } = useContext(Context);
-
 
     const { id } = useParams();
     const [user, setUser] = useState([]);
@@ -32,6 +30,8 @@ function Profile() {
 
             history.push(`/edit/${id}`);
             localStorage.getItem('token', response.data.token);
+
+            
         })
     }
 
@@ -41,7 +41,7 @@ function Profile() {
 
 
             setAuthenticated(true);
-            console.log(authenticated)
+            console.log(response.data)
             setUser([response.data.user]);
 
             localStorage.getItem('token', response.data.token);
@@ -53,8 +53,11 @@ function Profile() {
                 class: item.class,
                 skill: item.skills,  
             }))
-
+           
             setAgents(agentsData);
+       
+            const arraySkill = response.data.agents[0].skills;
+            console.log(JSON.parse(arraySkill)[0])
         })
     }, [id, authenticated]);
 
@@ -96,15 +99,18 @@ function Profile() {
                              <img src={`http://localhost:3000/uploads/${agent.image}`} alt={agent.name}/>
                                <div>
                                 <header>
-                                        <span>Agente: <span>{agent.name}</span></span>
-                                        <span>Classe: <span>{agent.class}</span></span>
+                                        <span>{agent.name}</span>
+                                        <span>{agent.class}</span>
                                     </header>
 
                                     <aside>
-                                        <h1>Skills:</h1>
+                                        <h1>Skills</h1>
                         
                                         <ul>
-                                            <li key={agent.id}>{agent.skill, JSON.parse(agent.skill)}</li>
+                                            <li key={agent.id}>{(JSON.parse(agent.skill)[0])}</li>
+                                            <li key={agent.id}>{(JSON.parse(agent.skill)[1])}</li>
+                                            <li key={agent.id}>{(JSON.parse(agent.skill)[2])}</li>
+                                            <li key={agent.id}>{(JSON.parse(agent.skill)[3])}</li>
                                         </ul>
                                     </aside>
                                </div>
@@ -112,7 +118,7 @@ function Profile() {
                     ))}
                 </SideAgents>
             </Container>
-            
+
         </>
   );
 }

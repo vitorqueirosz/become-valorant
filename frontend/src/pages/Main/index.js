@@ -5,9 +5,11 @@ import { Container, Header, DivLogin } from './styles';
 import api from '../../services/api';
 import Input from '../../components/Input';
 
+
 function Main( props ) {
+
+
     const [loginData, setLoginData] = useState();
-    const [authenticated, setAuthenticated] = useState(false);
 
     const history = useHistory();
  
@@ -18,15 +20,6 @@ function Main( props ) {
         
     };
 
-    
-    useEffect(() => {
-        // if(Storage.token !== undefined)  {
-            // setAuthenticated(true)
-            console.log(authenticated)
-        // }
-        // console.log(Storage.tasks)
-      }, []);
-      
       async function handleLogin(event) {
           event.preventDefault();
           
@@ -41,14 +34,11 @@ function Main( props ) {
     await api.post('/sessions', data).then(response => {
             const { id } = response.data.user;
             
-            setAuthenticated(true);
-            
             history.push(`/profile/${id}`, response.data.token);
  
             localStorage.setItem('token', response.data.token);
-            // console.log(response.data.token)
-        })        
-    }
+        });      
+    };
 
 
     return (

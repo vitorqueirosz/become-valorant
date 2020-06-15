@@ -79,6 +79,18 @@ class UsersController {
 
         } = req.body;
 
+        const Emailexists = await knex('users').select('email').where('email', email).first();
+
+
+        if(Emailexists) {
+            const userExists = await knex('users').where('email', email).first();
+            console.log(userExists)
+            if(userExists) {
+                return res.status(401).json({ error: 'User already exists'})
+            }
+        }
+
+
     const trx = await knex.transaction();
 
     const user = {
@@ -159,6 +171,14 @@ class UsersController {
 
 
     };
+
+    async delete(req: Request, res: Response) {
+    
+        await knex('users').where('id', req.userID)
+        .first().delete()
+
+        return res.json({ message: 'User deleted!'})
+    }
 }
 
 export default UsersController;
